@@ -45,9 +45,10 @@ public class PublishingManagerHibernateImpl implements PublishingManager {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public List<Autor> getAllAutors() {
-		// TODO Auto-generated method stub
-		return null;
+		return sessionFactory.getCurrentSession().getNamedQuery("Autor.all")
+				.list();
 	}
 
 	@Override
