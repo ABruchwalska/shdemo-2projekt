@@ -70,34 +70,57 @@ public class PublishingManagerHibernateImpl implements PublishingManager {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public Long addNewKsiazka(Ksiazka ksiazka, Autor autor) {
-		// TODO Auto-generated method stub
-		return null;
+		ksiazka.setId(null);
+		ksiazka.setAutor(autor.getImie());
+		List<Ksiazka>ListaKsiazek = autor.getKsiazkas();
+		ListaKsiazek.add(ksiazka);
+		autor.setKsiazkas(ListaKsiazek);
+		sessionFactory.getCurrentSession().save(autor);
+		return (Long) sessionFactory.getCurrentSession().save(ksiazka);
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public List<Ksiazka> getAvailableKsiazkas() {
-		// TODO Auto-generated method stub
-		return null;
+		return sessionFactory.getCurrentSession().getNamedQuery("ksiazka.published")
+				.list();
+	}
+	@Override
+	@SuppressWarnings("unchecked")
+	public void unpublishKsiazka(Autor autor, Ksiazka ksiazka) {
+
+		autor = (Autor) sessionFactory.getCurrentSession().get(Autor.class,
+				autor.getId());
+		ksiazka = (Ksiazka) sessionFactory.getCurrentSession().get(Ksiazka.class,
+				ksiazka.getId());
+
+		Ksiazka toUnpublish = null;
+		for (Ksiazka aKsiazka : autor.getKsiazkas())
+			if (aKsiazka.getId().compareTo(ksiazka.getId()) == 0) {
+				toUnpublish = aKsiazka;
+				break;
+			}
+
+		if (toUnpublish != null)
+			autor.getKsiazkas().remove(toUnpublish);
+
+		ksiazka.setPublished(true);
 	}
 
-	@Override
-	public void unpublishKsiazka(Autor autor, Ksiazka ksiazka) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	public Ksiazka findKsiazkaById(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+		return (Ksiazka) sessionFactory.getCurrentSession().get(Ksiazka.class, id);
 	}
 
 	@Override
 	public List<Ksiazka> getPublishedKsiazkas(Autor autor) {
-		// TODO Auto-generated method stub
-		return null;
+		autor = (Autor) sessionFactory.getCurrentSession().get(Autor.class,
+				autor.getId());
+		List<Ksiazka> ksiazkas = new ArrayList<Ksiazka>(autor.getKsiazkas());
+		return ksiazkas;
 	}
-
 	
 }
