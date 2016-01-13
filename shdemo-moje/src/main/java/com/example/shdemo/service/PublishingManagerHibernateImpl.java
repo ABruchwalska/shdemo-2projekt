@@ -52,21 +52,21 @@ public class PublishingManagerHibernateImpl implements PublishingManager {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public List<Autor> findAutorsByCountry(String country) {
-		// TODO Auto-generated method stub
-		return null;
+		return sessionFactory.getCurrentSession().getNamedQuery("autor.byCountry").setString("country", country).list();
 	}
 
 	@Override
-	public Autor findAutorById(Long id) {
-		// TODO Auto-generated method stub
-		return null;
+	public Autor findAutorById(Long id){
+		return (Autor) sessionFactory.getCurrentSession().get(Autor.class, id);
 	}
 
 	@Override
-	public void moveAutor(Long autorId, String country) {
-		// TODO Auto-generated method stub
-		
+	public void moveAutor(Long autorId, String country){
+		Autor autor = (Autor) sessionFactory.getCurrentSession().get(
+				Autor.class, autorId);
+		autor.setCountry(country);
 	}
 
 	@Override
