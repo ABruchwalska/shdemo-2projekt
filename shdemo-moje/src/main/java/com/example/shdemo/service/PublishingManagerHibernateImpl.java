@@ -70,7 +70,7 @@ public class PublishingManagerHibernateImpl implements PublishingManager {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
+	//@SuppressWarnings("unchecked")
 	public Long addNewKsiazka(Ksiazka ksiazka, Autor autor) {
 		ksiazka.setId(null);
 		ksiazka.setAutor(autor.getImie());
@@ -88,7 +88,7 @@ public class PublishingManagerHibernateImpl implements PublishingManager {
 				.list();
 	}
 	@Override
-	@SuppressWarnings("unchecked")
+	//@SuppressWarnings("unchecked")
 	public void unpublishKsiazka(Autor autor, Ksiazka ksiazka) {
 
 		autor = (Autor) sessionFactory.getCurrentSession().get(Autor.class,
