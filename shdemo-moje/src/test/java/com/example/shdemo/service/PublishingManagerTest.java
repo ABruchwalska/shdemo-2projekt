@@ -42,7 +42,7 @@ public class PublishingManagerTest {
 	private final String AUTOR_2 		= "Garou";
 	
 	@Test
-	public void addAutorCheck() {
+	public void addAutorCheck() { //sprawdza,czy dodaje poprawnie autora
 
 		Autor autor = new Autor();
 		autor.setImie(IMIE_1);
@@ -60,7 +60,7 @@ public class PublishingManagerTest {
 	}
 
 	@Test
-	public void addKsiazkaCheck() {
+	public void addKsiazkaCheck() { //sprawdza,czy poprawnie dodaje ksiazki
 
 		Ksiazka ksiazka= new Ksiazka();
 		Autor autor = new Autor();
@@ -80,7 +80,7 @@ public class PublishingManagerTest {
 	}
 
 	@Test
-	public void getAvailableKsiazkasCheck() {
+	public void getAvailableKsiazkasCheck() { //sprawdza czy zwraca dostepne ksiazki
 
 		Autor autor = new Autor();
 		autor.setImie(IMIE_2);
@@ -105,7 +105,10 @@ public class PublishingManagerTest {
 	}
 
 	@Test
-	public void unpublishKsiazkaCheck() {
+	public void unpublishKsiazkaCheck() { //unpublish- ze masz ksiazke ktora 
+										  //jest published = true
+										  //a unpublish
+										  //robi = false
 		
 		Autor autor = new Autor();
 		autor.setImie(IMIE_1);
@@ -129,7 +132,7 @@ public class PublishingManagerTest {
 	}
 	
 	@Test
-	public void deleteAutorCheck(){
+	public void deleteAutorCheck(){ //sprawdza,czy poprawnie usuwa autora
 		Autor autor = new Autor();
 		autor.setImie(IMIE_1);
 		autor.setCountry(COUNTRY_1);
@@ -141,7 +144,7 @@ public class PublishingManagerTest {
 	}
 	
 	@Test
-	public void moveAutorCheck(){
+	public void moveAutorCheck(){ //sprawdza,czy zmienia autorowi jestgo "country"
 		Autor autor = new Autor();
 		autor.setImie(IMIE_1);
 		autor.setCountry(COUNTRY_1);
