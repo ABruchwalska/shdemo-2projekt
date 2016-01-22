@@ -1,13 +1,10 @@
 package com.example.shdemo.service;
 
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.junit.runner.RunWith;
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +21,7 @@ import com.example.shdemo.domain.Autor;
 @TransactionConfiguration(transactionManager = "txManager", defaultRollback = true)
 @Transactional
 public class PublishingManagerTest {
+	
 
 	@Autowired
 	PublishingManager pM;
@@ -41,17 +39,24 @@ public class PublishingManagerTest {
 	private final String TYTUL_2 	= "Amour";
 	private final String AUTOR_2 		= "Garou";
 	
-	@Test
-	public void addAutorCheck() { //sprawdza,czy dodaje poprawnie autora
-
-		Autor autor = new Autor();
+	private Autor autor;
+	
+	@Before
+	public void infoAutor(){
+		
+		autor = new Autor();
 		autor.setImie(IMIE_1);
 		autor.setWiek(WIEK_1);
 		autor.setCountry(COUNTRY_1);
+	}
+	
+	@Test
+	public void addAutorCheck() { //sprawdza,czy dodaje poprawnie autora
 
+		
 		Long AutorId = pM.addAutor(autor);
 
-		Autor retrievedAutor = pM.findAutorById(AutorId);
+		Autor retrievedAutor = pM.findAutorById(AutorId); //retrieved- wziety z bazy
 
 		assertEquals(IMIE_1, retrievedAutor.getImie());
 		assertEquals(WIEK_1, retrievedAutor.getWiek());
@@ -63,14 +68,10 @@ public class PublishingManagerTest {
 	public void addKsiazkaCheck() { //sprawdza,czy poprawnie dodaje ksiazki
 
 		Ksiazka ksiazka= new Ksiazka();
-		Autor autor = new Autor();
 		ksiazka.setTytul(TYTUL_1);
 		ksiazka.setAutor(AUTOR_1);
 		
-		autor.setImie(IMIE_1);
-		autor.setWiek(WIEK_1);
-		autor.setCountry(COUNTRY_1);
-		
+				
 		Long KsiazkaId = pM.addNewKsiazka(ksiazka, autor);
 
 		Ksiazka retrievedKsiazka = pM.findKsiazkaById(KsiazkaId);
@@ -82,26 +83,19 @@ public class PublishingManagerTest {
 	@Test
 	public void getAvailableKsiazkasCheck() { //sprawdza czy zwraca dostepne ksiazki
 
-		Autor autor = new Autor();
-		autor.setImie(IMIE_2);
-		autor.setCountry(COUNTRY_2);
-
-		Long AutorId = pM.addAutor(autor);
-
-		Autor retrievedAutor = pM.findAutorById(AutorId);
-
+		int amount = pM.getAvailableKsiazkas().size();//pobiera ilosc ksiazek w bazie		
+		
 		Ksiazka ksiazka = new Ksiazka();
 		ksiazka.setTytul(TYTUL_2);
-		ksiazka.setAutor(AUTOR_2);
 
 		pM.addNewKsiazka(ksiazka, autor);
 
 	
 		List<Ksiazka> getAvailableKsiazkas = pM.getAvailableKsiazkas();
 
-		assertEquals(1, getAvailableKsiazkas.size());
-		assertEquals(TYTUL_2, getAvailableKsiazkas.get(0).getTytul());
-		assertEquals(AUTOR_2, getAvailableKsiazkas.get(0).getAutor());
+		assertEquals(amount + 1, getAvailableKsiazkas.size());
+		assertEquals(TYTUL_2, getAvailableKsiazkas.get(amount).getTytul());
+		assertEquals(autor.getImie(), getAvailableKsiazkas.get(amount).getAutor());
 	}
 
 	@Test
@@ -109,11 +103,6 @@ public class PublishingManagerTest {
 										  //jest published = true
 										  //a unpublish
 										  //robi = false
-		
-		Autor autor = new Autor();
-		autor.setImie(IMIE_1);
-		autor.setWiek(WIEK_1);
-		autor.setCountry(COUNTRY_1);
 		
 		Long AutorId = pM.addAutor(autor);
 		
@@ -133,9 +122,7 @@ public class PublishingManagerTest {
 	
 	@Test
 	public void deleteAutorCheck(){ //sprawdza,czy poprawnie usuwa autora
-		Autor autor = new Autor();
-		autor.setImie(IMIE_1);
-		autor.setCountry(COUNTRY_1);
+		
 		
 		Long AutorId = pM.addAutor(autor);
 		
@@ -145,10 +132,7 @@ public class PublishingManagerTest {
 	
 	@Test
 	public void moveAutorCheck(){ //sprawdza,czy zmienia autorowi jestgo "country"
-		Autor autor = new Autor();
-		autor.setImie(IMIE_1);
-		autor.setCountry(COUNTRY_1);
-		
+				
 		Long AutorId = pM.addAutor(autor);
 		
 		pM.moveAutor(AutorId, COUNTRY_2);
