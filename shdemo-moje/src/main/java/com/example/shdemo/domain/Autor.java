@@ -60,7 +60,7 @@ public class Autor {
 	}
 	
 	// Be careful here, both with lazy and eager fetch type
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)//pobiera ksiazki autora dopiero wtedy,kiedy chcesz je uzyc
 	public List<Ksiazka> getKsiazkas() {
 		return ksiazkas;
 	}
