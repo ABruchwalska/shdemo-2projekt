@@ -47,7 +47,7 @@ public class PublishingManagerHibernateImpl implements PublishingManager {
 	@Override
 	@SuppressWarnings("unchecked")
 	public List<Autor> getAllAutors() {
-		return sessionFactory.getCurrentSession().getNamedQuery("Autor.all")
+		return sessionFactory.getCurrentSession().getNamedQuery("autor.all")
 				.list();
 	}
 

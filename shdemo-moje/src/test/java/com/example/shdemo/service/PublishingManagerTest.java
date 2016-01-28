@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +32,7 @@ public class PublishingManagerTest {
 	private final String COUNTRY_1 	= "Poland";
 
 	private final String IMIE_2 	= "Garou";
+	private final int WIEK_2        = 15;
 	private final String COUNTRY_2 	= "France";
 
 	private final String TYTUL_1 	= "Inkwizytor"; 
@@ -41,6 +43,8 @@ public class PublishingManagerTest {
 	
 	private Autor autor;
 	
+	Long AutorId;
+	
 	@Before
 	public void infoAutor(){
 		
@@ -48,19 +52,32 @@ public class PublishingManagerTest {
 		autor.setImie(IMIE_1);
 		autor.setWiek(WIEK_1);
 		autor.setCountry(COUNTRY_1);
+		
+		AutorId = pM.addAutor(autor);
+	}
+	
+	@After
+	public void usuwanieAutor(){
+		
+		pM.deleteAutor(pM.findAutorById(AutorId));
 	}
 	
 	@Test
 	public void addAutorCheck() { //sprawdza,czy dodaje poprawnie autora
 
 		
-		Long AutorId = pM.addAutor(autor);
+		Autor autor1 = new Autor();
+		autor1.setImie(IMIE_2);
+		autor1.setWiek(WIEK_2);
+		autor1.setCountry(COUNTRY_2);
+		
+		Long AutorId1 = pM.addAutor(autor1);
 
-		Autor retrievedAutor = pM.findAutorById(AutorId); //retrieved- wziety z bazy
+		Autor retrievedAutor = pM.findAutorById(AutorId1); //retrieved- wziety z bazy
 
-		assertEquals(IMIE_1, retrievedAutor.getImie());
-		assertEquals(WIEK_1, retrievedAutor.getWiek());
-		assertEquals(COUNTRY_1, retrievedAutor.getCountry());
+		assertEquals(IMIE_2, retrievedAutor.getImie());
+		assertEquals(WIEK_2, retrievedAutor.getWiek());
+		assertEquals(COUNTRY_2, retrievedAutor.getCountry());
 
 	}
 
@@ -104,16 +121,21 @@ public class PublishingManagerTest {
 										  //a unpublish
 										  //robi = false
 		
-		Long AutorId = pM.addAutor(autor);
+		Autor autor1 = new Autor();
+		autor1.setImie(IMIE_2);
+		autor1.setWiek(WIEK_2);
+		autor1.setCountry(COUNTRY_2);
+		
+		Long AutorId1 = pM.addAutor(autor1);
 		
 		Ksiazka ksiazka = new Ksiazka();
 		ksiazka.setTytul(TYTUL_1);
 		ksiazka.setAutor(AUTOR_1);
 		
-		pM.addNewKsiazka(ksiazka, autor);
+		pM.addNewKsiazka(ksiazka, autor1);
 		
 				
-		Autor retrievedAutor = pM.findAutorById(AutorId);
+		Autor retrievedAutor = pM.findAutorById(AutorId1);
 		assertEquals(1, retrievedAutor.getKsiazkas().size());
 		
 		pM.unpublishKsiazka(retrievedAutor, ksiazka);
@@ -123,21 +145,36 @@ public class PublishingManagerTest {
 	@Test
 	public void deleteAutorCheck(){ //sprawdza,czy poprawnie usuwa autora
 		
+		Long ID = pM.getAllAutors().get(0).getId(); //pobieram przed usuwaniem autora,ktorego dodalam w before
+
+		Autor autor1 = new Autor();
+		autor1.setImie(IMIE_2);
+		autor1.setWiek(WIEK_2);
+		autor1.setCountry(COUNTRY_2);
 		
-		Long AutorId = pM.addAutor(autor);
+		Long AutorId1 = pM.addAutor(autor1);
 		
-		pM.deleteAutor(autor);
-		assertEquals(null, pM.findAutorById(AutorId));
+		int amountA = pM.getAllAutors().size();
+		pM.deleteAutor(autor1);
+		assertEquals(null, pM.findAutorById(AutorId1));
+		//sprawdzic czy nie skasowalismy za duzo autorow;
+		assertEquals(amountA - 1, pM.getAllAutors().size());
+		assertEquals(ID, pM.getAllAutors().get(0).getId()); //sprawdzam,czy ten autor,co byl wczensiej pobrany nie zostal usuniety 
 	}
 	
 	@Test
 	public void moveAutorCheck(){ //sprawdza,czy zmienia autorowi jestgo "country"
 				
-		Long AutorId = pM.addAutor(autor);
+		Autor autor1 = new Autor();
+		autor1.setImie(IMIE_2);
+		autor1.setWiek(WIEK_2);
+		autor1.setCountry(COUNTRY_2);
 		
-		pM.moveAutor(AutorId, COUNTRY_2);
+		Long AutorId1 = pM.addAutor(autor1);
 		
-		assertEquals(COUNTRY_2, pM.findAutorById(AutorId).getCountry());
+		pM.moveAutor(AutorId1, COUNTRY_2);
+		
+		assertEquals(COUNTRY_2, pM.findAutorById(AutorId1).getCountry());
 	}
 
 }
